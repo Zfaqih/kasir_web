@@ -59,34 +59,17 @@ include 'koneksi.php';
                 <div class="bg-blue py-1 collapse-inner rounded">
                     <p style="display: block;"><a class="collapse-item" href="produk.php" style="color: white; font-weight: bold; font-size: 20px;">Barang</a></p>
                     <hr class="sidebar-divider">
-                    <p style="display: block;"><a class="collapse-item" href="kategori.php" style="color: white; font-weight: bold; font-size: 20px;">Kategori</a></p>
-                    <hr class="sidebar-divider">
-                    <p style="display: block;"><a class="collapse-item" href="toko.php" style="color: white; font-weight: bold; font-size: 20px;">Toko</a></p>
-                    <hr class="sidebar-divider">
+                   
                     <p style="display: block;"><a class="collapse-item" href="pelanggan.php" style="color: white; font-weight: bold; font-size: 20px;">Pelanggan</a></p>
                     <hr class="sidebar-divider">
                     <p style="display: block;"><a class="collapse-item" href="supplier.php" style="color: white; font-weight: bold; font-size: 20px;">Suplier</a></p>                
-                    <hr class="sidebar-divider">              
+                    <hr class="sidebar-divider">        
+                    <p style="display: block;"><a class="collapse-item" href="pembelian.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian</a></p>                
+                    <hr class="sidebar-divider">        
                 </div>
             </div>
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item text-center">
-                <a class="nav-link collapsed text-center" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-file"></i>
-                    <span>TRANSAKSI</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="transaksi/penjualan.php" style="font-weight: bold; font-size: 15px;">Penjualan</a>
-                        <a class="collapse-item" href="transaksi/penjualan_detail.php" style="font-weight: bold; font-size: 15px;">Detail Penjualan</a>
-                        <a class="collapse-item" href="transaksi/pembelian.php" style="font-weight: bold; font-size: 15px;">Pembelian</a>
-                        <a class="collapse-item" href="transaksi/pembelian_detail.php" style="font-weight: bold; font-size: 15px;">Detail_Pembelian</a>
-                    </div>
-                </div>
-            </li>
+           
             <li class="nav-item text-center">
                 <a class="nav-link collapsed text-center" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -149,43 +132,61 @@ include 'koneksi.php';
 
 </nav>
             <!-- content -->
+<!DOCTYPE html>
+<html lang="en">
 
-<h2 class="text-center">PELANGGAN</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pelanggan</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
 
-<div class="container">
-    <form action="tambah/tambah_pelanggan.php" method="get">
-        <button type='submit' class='btn btn-success mb-2'>Tambah</button>
-    </form>
-    <table class="table table-bordered table-sm">
-        <thead>
-            <tr>
-                <th class="text-center">Nama pelanggan</th> <!-- Pindahkan ke tengah dengan menambahkan kelas text-center di sini -->
-                <th class="text-center">Alamat</th> <!-- Pindahkan ke tengah dengan menambahkan kelas text-center di sini -->
-                <th class="text-center">No Hp</th>
-                <th class="text-center">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
+<body>
 
-            <?php
+    <h2 class="text-center">Data Pelanggan</h2>
+
+    <div class="container">
+        <!-- Add a link or button to navigate to the tambah_pelanggan.php page -->
+        <a href="tambah_pelanggan.php" class="btn btn-success mb-2">Tambah Pelanggan</a>
+
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr class="text-center">
+                    <th>ID Pelanggan</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Alamat</th>
+                    <th>No. HP</th>
+                    <th>Tanggal Pembuatan</th>
+                    <th>Aksi</th> <!-- Add this column for actions -->
+                </tr>
+            </thead>
+            <tbody>
+
+                <?php
                 try {
+                    // Use your database connection details
                     $pdo = new PDO("mysql:host=localhost;dbname=db_kasir", "root", "");
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                     $stmt = $pdo->prepare("SELECT * FROM pelanggan");
                     $stmt->execute();
-                    $produkData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $pelangganData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    foreach ($produkData as $produk) {
+                    foreach ($pelangganData as $pelanggan) {
                         echo "<tr>";
-                        echo "<td class='text-center'>{$produk['nama_pelanggan']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
-                        echo "<td class='text-center'>{$produk['alamat']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
-                        echo "<td class='text-center'>{$produk['no_hp']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
-                        echo "<td class='text-center'>";
-                        echo "<a href='edit.php?id={$produk['toko_id']}' class='btn btn-warning btn-sm'>Edit</a>";
-                        echo " ";
-                        echo "<a href='delete/hapus_pelanggan.php?id={$produk['pelanggan_id']}' class='btn btn-danger btn-sm'>Hapus</a>";
-                        echo "</td>";
+                        echo "<td>{$pelanggan['pelanggan_id']}</td>";
+                        echo "<td>{$pelanggan['nama_pelanggan']}</td>";
+                        echo "<td>{$pelanggan['alamat']}</td>";
+                        echo "<td>{$pelanggan['no_hp']}</td>";
+                        echo "<td>{$pelanggan['created_at']}</td>";
+                        // Add action buttons (Edit and Delete for example)
+                        echo "<td>
+                                <a href='edit_pelanggan.php?id={$pelanggan['pelanggan_id']}' class='btn btn-warning btn-sm'>Edit</a>
+                               
+                                <a href='delete/hapus_pelanggan.php?id={$pelanggan['pelanggan_id']}' class='btn btn-danger btn-sm'>Hapus</a>
+                              </td>";
+                             
                         echo "</tr>";
                     }
                 } catch (PDOException $e) {
@@ -194,10 +195,14 @@ include 'koneksi.php';
 
                 // Close the database connection
                 $pdo = null;
-            ?>
-        </tbody>
-    </table>
-</div>
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
 
 
 

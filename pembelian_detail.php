@@ -195,27 +195,152 @@ $result2=mysqli_query($conn,$sql);
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><h5>Data Barang</h5></div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                                            <span class="info-box-number">
-                                            <a href="produk.php" class="btn btn-primary btn-user btn-block">
-                                            lanjut
-                                            </a>
-                                            </span>
-                                        </div>
-                                        <div class="col-auto">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pembelian</title>
+
+    <!-- Add your CSS link or include styles here -->
+    <style>
+        <!-- Add your styles here -->
+    </style>
+</head>
+
+<body>
+
+    <h2 class="text-center">Detail Pembelian</h2>
+
+    <div class="container">
+        <table class="table table-bordered table-sm">
+            <!-- Include a table to display purchase details -->
+            <thead>
+                <tr class="text-center">
+                    <th>No.</th>
+                    <th>Nama Produk</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Connect to your database and fetch purchase details
+                // Use a PDO connection or any database connection method you prefer
+
+                if (isset($_GET['id'])) {
+                    $purchaseId = $_GET['id'];
+
+                    try {
+                        $pdo = new PDO("mysql:host=localhost;dbname=kasir", "your_username", "your_password");
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        // Fetch purchase details based on the purchase ID
+                        $stmt = $pdo->prepare("SELECT pd.*, p.nama_produk, p.harga FROM pembelian_detail pd
+                                              JOIN produk p ON pd.produk_id = p.produk_id
+                                              WHERE pd.pembelian_id = :purchase_id");
+                        $stmt->bindParam(':purchase_id', $purchaseId);
+                        $stmt->execute();
+                        $purchaseDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        $total = 0; // Initialize total variable
+
+                        foreach ($purchaseDetails as $key => $detail) {
+                            echo "<tr>";
+                            echo "<td>" . ($key + 1) . "</td>";
+                            echo "<td>{$detail['nama_produk']}</td>";
+                            echo "<td>{$detail['harga']}</td>";
+                            echo "<td>{$detail['jumlah']}</td>";
+                            $subtotal = $detail['harga'] * $detail['jumlah'];
+                            echo "<td>{$subtotal}</td>";
+                            echo "</tr>";
+
+                            // Accumulate subtotal to calculate the total
+                            $total += $subtotal;
+                        }
+                    } catch (PDOException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
+
+                    // Close the database connection
+                    $pdo = null;
+
+                    // Display total
+                    echo "<tr>";
+                    echo "<td colspan='4' class='text-right'>Total:</td>";
+                    echo "<td>{$total}</td>";
+                    echo "</tr>";
+                } else {
+                    echo "<tr><td colspan='5' class='text-center'>Purchase ID not provided.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
+
+        <!-- Display total -->
+        <div class="text-center">
+            <p>Total: <?php echo $total; ?></p>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
                         <!-- Earnings (Monthly) Card Example -->
                         
                        

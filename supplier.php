@@ -38,8 +38,9 @@ include 'koneksi.php';
                 <div class="sidebar-brand-icon rotate-n-15">
                
                 </div>
-                <div class="sidebar-brand-text mx-3"><sup></sup></div>
+                <div class="sidebar-brand-text mx-2"><sup>ADMIN</sup></div>
             </a>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -59,34 +60,19 @@ include 'koneksi.php';
                 <div class="bg-blue py-1 collapse-inner rounded">
                     <p style="display: block;"><a class="collapse-item" href="produk.php" style="color: white; font-weight: bold; font-size: 20px;">Barang</a></p>
                     <hr class="sidebar-divider">
-                    <p style="display: block;"><a class="collapse-item" href="kategori.php" style="color: white; font-weight: bold; font-size: 20px;">Kategori</a></p>
-                    <hr class="sidebar-divider">
-                    <p style="display: block;"><a class="collapse-item" href="toko.php" style="color: white; font-weight: bold; font-size: 20px;">Toko</a></p>
-                    <hr class="sidebar-divider">
+                    
                     <p style="display: block;"><a class="collapse-item" href="pelanggan.php" style="color: white; font-weight: bold; font-size: 20px;">Pelanggan</a></p>
                     <hr class="sidebar-divider">
                     <p style="display: block;"><a class="collapse-item" href="supplier.php" style="color: white; font-weight: bold; font-size: 20px;">Suplier</a></p>                
-                    <hr class="sidebar-divider">              
+                    <hr class="sidebar-divider">       
+                    <p style="display: block;"><a class="collapse-item" href="pembelian.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian</a></p>                
+                    <hr class="sidebar-divider">    
+                    <p style="display: block;"><a class="collapse-item" href="penjualan.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan</a></p>                
+                    <hr class="sidebar-divider">            
                 </div>
             </div>
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item text-center">
-                <a class="nav-link collapsed text-center" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-file"></i>
-                    <span>TRANSAKSI</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Transaksi</h6>
-                        <a class="collapse-item" href="transaksi/penjualan.php" style="font-weight: bold; font-size: 15px;">Penjualan</a>
-                        <a class="collapse-item" href="transaksi/penjualan_detail.php" style="font-weight: bold; font-size: 15px;">Detail Penjualan</a>
-                        <a class="collapse-item" href="transaksi/pembelian.php" style="font-weight: bold; font-size: 15px;">Pembelian</a>
-                        <a class="collapse-item" href="transaksi/pembelian_detail.php" style="font-weight: bold; font-size: 15px;">Detail_Pembelian</a>
-                    </div>
-                </div>
-            </li>
+            
             <li class="nav-item text-center">
                 <a class="nav-link collapsed text-center" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -145,23 +131,22 @@ include 'koneksi.php';
 </nav>
             <!-- content -->
 
-<h2 class="text-center">SUPPLIER</h2>
+            <h2 class="text-center">SUPPLIER</h2>
 
 <div class="container">
     <form action="tambah/tambah_supplier.php" method="get">
-        <button type='submit' class='btn btn-success mb-2'>Tambah</button>
+        <button type='submit' class='btn btn-success mb-2'>Tambah supplier</button>
     </form>
     <table class="table table-bordered table-sm">
         <thead>
             <tr class="text-center">
-                <th class="text-center">Nama Suplier</th> <!-- Pindahkan ke tengah dengan menambahkan kelas text-center di sini -->
-                <th class="text-center">Tlp Hp</th> <!-- Pindahkan ke tengah dengan menambahkan kelas text-center di sini -->
+                <th class="text-center">Nama Suplier</th>
+                <th class="text-center">Tlp Hp</th>
                 <th class="text-center">Alamat Suplier</th>
                 <th class="text-center">Aksi</th>
             </tr>
         </thead>
         <tbody>
-
             <?php
                 try {
                     $pdo = new PDO("mysql:host=localhost;dbname=db_kasir", "root", "");
@@ -169,17 +154,19 @@ include 'koneksi.php';
 
                     $stmt = $pdo->prepare("SELECT * FROM suplier");
                     $stmt->execute();
-                    $produkData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $supplierData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    foreach ($produkData as $produk) {
+                    foreach ($supplierData as $supplier) {
                         echo "<tr>";
-                        echo "<td class='text-center'>{$produk['nama_suplier']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
-                        echo "<td class='text-center'>{$produk['tlp_hp']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
-                        echo "<td class='text-center'>{$produk['alamat_suplier']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
+                        echo "<td class='text-center'>{$supplier['nama_suplier']}</td>";
+                        echo "<td class='text-center'>{$supplier['tlp_hp']}</td>";
+                        echo "<td class='text-center'>{$supplier['alamat_suplier']}</td>";
                         echo "<td class='text-center'>";
-                        echo "<a href='edit.php?id={$produk['toko_id']}' class='btn btn-warning btn-sm'>Edit</a>";
+                        echo "<a href='edit.php?id={$supplier['suplier_id']}' class='btn btn-warning btn-sm'>Edit</a>";
                         echo " ";
-                        echo "<a href='delete/hapus_supplier.php?id={$produk['suplier_id']}' class='btn btn-danger btn-sm'>Hapus</a>";
+                        echo "<a href='delete/hapus_supplier.php?id={$supplier['suplier_id']}' class='btn btn-danger btn-sm'>Hapus</a>";
+                        echo " ";
+                        echo "<a href='tambah_produk.php?id={$supplier['suplier_id']}' class='btn btn-success btn-sm'>Tambah Produk</a>";
                         echo "</td>";
                         echo "</tr>";
                     }

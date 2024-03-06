@@ -87,11 +87,9 @@ $result2=mysqli_query($conn,$sql);
                     <p style="display: block;"><a class="collapse-item" href="supplier.php" style="color: white; font-weight: bold; font-size: 20px;">Suplier</a></p>                
                     <hr class="sidebar-divider">              
                     <p style="display: block;"><a class="collapse-item" href="pembelian.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian</a></p>                
-                    <hr class="sidebar-divider">   
-                    <p style="display: block;"><a class="collapse-item" href="pembelian_detail.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian detail</a></p>                
-                    <hr class="sidebar-divider">   
-                    <p style="display: block;"><a class="collapse-item" href="penjualan.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan</a></p>                
                     <hr class="sidebar-divider">  
+                    <p style="display: block;"><a class="collapse-item" href="penjualan.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan</a></p>                
+                    <hr class="sidebar-divider">   
                 </div>
             </div>
             <!-- Nav Item - Utilities Collapse Menu -->
@@ -195,26 +193,227 @@ $result2=mysqli_query($conn,$sql);
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><h5>Data Barang</h5></div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                                            <span class="info-box-number">
-                                            <a href="produk.php" class="btn btn-primary btn-user btn-block">
-                                            lanjut
-                                            </a>
-                                            </span>
-                                        </div>
-                                        <div class="col-auto">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pembelian</title>
+    <!-- Add your CSS link or styles here -->
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+
+<body>
+
+    <h2 class="text-center">Data Pembelian</h2>
+
+    <div class="container">
+        <!-- Add a form for adding a new purchase -->
+        <form action="proses_tambah_pembelian.php" method="post">
+            <!-- Include necessary input fields -->
+            <label for="no_faktur">No. Faktur:</label>
+            <input type="text" id="no_faktur" name="no_faktur" required readonly>
+
+            <label for="tanggal_pembelian">Tanggal Pembelian:</label>
+            <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" required>
+
+            <label for="suplier_id">Supplier ID:</label>
+            <input type="text" id="suplier_id" name="suplier_id" required readonly>
+
+            <label for="total">Total:</label>
+            <input type="text" id="total" name="total" required>
+
+            <label for="bayar">Bayar:</label>
+            <input type="text" id="bayar" name="bayar" required>
+
+            <label for="sisa">Sisa:</label>
+            <input type="text" id="sisa" name="sisa" required>
+
+            <label for="stok">Stok:</label>
+            <input type="text" id="stok" name="stok" required>
+
+            <label for="keterangan">Keterangan:</label>
+            <textarea id="keterangan" name="keterangan"></textarea>
+
+
+
+            <button type="submit">Tambah Pembelian</button>
+        </form>
+
+        <table class="table table-bordered table-sm">
+            <!-- Include a table to display existing purchases -->
+            <thead>
+                <tr class="text-center">
+                    <th>No. Faktur</th>
+                    <th>Tanggal Pembelian</th>
+                    <th>Supplier ID</th>
+                    <th>Total</th>
+                    <th>Bayar</th>
+                    <th>Sisa</th>
+                    <th>Stok</th>
+                    <th>Keterangan</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Connect to your database and fetch data to display in the table
+                // Use a PDO connection or any database connection method you prefer
+                try {
+                    $pdo = new PDO("mysql:host=localhost;dbname=db_kasir", "root", "");
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    $stmt = $pdo->prepare("SELECT * FROM pembelian");
+                    $stmt->execute();
+                    $pembelianData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($pembelianData as $pembelian) {
+                        echo "<tr>";
+                        echo "<td>{$pembelian['no_faktur']}</td>";
+                        echo "<td>{$pembelian['tanggal_pembelian']}</td>";
+                        echo "<td>{$pembelian['suplier_id']}</td>";
+                        echo "<td>{$pembelian['total']}</td>";
+                        echo "<td>{$pembelian['bayar']}</td>";
+                        echo "<td>{$pembelian['sisa']}</td>";
+                        echo "<td>{$pembelian['stok']}</td>";
+                        echo "<td>{$pembelian['keterangan']}</td>";
+                        echo "<td>{$pembelian['created_at']}</td>";
+                        echo "</tr>";
+                    }
+                } catch (PDOException $e) {
+                    echo "Error: " . $e->getMessage();
+                }
+                // Close the database connection
+                $pdo = null;
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add your JavaScript code here -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Generate a unique value for No. Faktur
+            var uniqueNoFaktur = 'F' + Date.now();
+            document.getElementById('no_faktur').value = uniqueNoFaktur;
+
+            // Fetch supplier data from the server (adjust the URL accordingly)
+            fetch('get_supplier_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Assuming data contains an array of suppliers
+                    // You can customize this based on your actual data structure
+                    if (data.length > 0) {
+                        document.getElementById('suplier_id').value = data[0].supplier_id;
+                    }
+                })
+                .catch(error => console.error('Error fetching supplier data:', error));
+        });
+    </script>
+
+</body>
+
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pembelian</title>
+
+    <!-- Add your CSS link or include styles here -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Rest of your HTML content -->
+</body>
+
+</html>
+
 
                         <!-- Earnings (Monthly) Card Example -->
                         

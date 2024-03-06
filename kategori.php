@@ -170,7 +170,7 @@ include 'koneksi.php';
                 echo "<tr>";
                 echo "<td class='text-center'>{$produk['nama_kategori']}</td>"; // Pindahkan ke tengah dengan menambahkan kelas text-center di sini
                 echo "<td class='text-center'>";
-                echo "<a href='edit.php?id={$produk['kategori_id']}' class='btn btn-warning btn-sm'>Edit</a>";
+                
                 echo " ";
                 echo "<a href='delete/hapus_kategori.php?id={$produk['kategori_id']}' class='btn btn-danger btn-sm'>Hapus</a>";
                 echo "</td>";
