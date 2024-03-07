@@ -87,8 +87,10 @@ $result2=mysqli_query($conn,$sql);
                     <p style="display: block;"><a class="collapse-item" href="supplier.php" style="color: white; font-weight: bold; font-size: 20px;">Suplier</a></p>                
                     <hr class="sidebar-divider">              
                     <p style="display: block;"><a class="collapse-item" href="pembelian.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian</a></p>                
-                    <hr class="sidebar-divider">   
+                    <hr class="sidebar-divider">    
                     <p style="display: block;"><a class="collapse-item" href="penjualan.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan</a></p>                
+                    <hr class="sidebar-divider">  
+                    <p style="display: block;"><a class="collapse-item" href="penjualan_detail.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan detail</a></p>                
                     <hr class="sidebar-divider">  
                 </div>
             </div>
@@ -194,13 +196,26 @@ $result2=mysqli_query($conn,$sql);
 
                         <!-- Earnings (Monthly) Card Example -->
                         <?php
-// Include your database connection script (e.g., 'koneksi.php')
-include 'koneksi.php';
+// Sesuaikan dengan informasi database Anda
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_kasir";
 
-// Fetch data from the penjualan table
-$sql = "SELECT * FROM penjualan";
-$result = mysqli_query($conn, $sql);
-$penjualanData = mysqli_fetch_all($result, MYSQLI_ASSOC);
+// Membuat koneksi
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Memeriksa koneksi
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query untuk mendapatkan daftar produk dari database
+$sql_produk = "SELECT * FROM produk";
+$result_produk = $conn->query($sql_produk);
+
+// Menutup koneksi
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -209,107 +224,237 @@ $penjualanData = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Penjualan</title>
-
-    <!-- Add your CSS link or include styles here -->
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fc;
-        }
-
-        h2 {
-            text-align: center;
-            margin-top: 20px;
-            color: #007bff;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #ddd;
-        }
-    </style>
+    <title>Halaman Penjualan</title>
+    <link rel="stylesheet" href="style.css"> <!-- Menghubungkan ke file CSS -->
 </head>
 
 <body>
-    <h2 class="text-center">Data Penjualan</h2>
 
     <div class="container">
-        <table class="table table-bordered table-sm">
+        <h2>Data Penjualan</h2>
+
+        <!-- Informasi Transaksi -->
+        <div class="transaction-info">
+            <label for="penjualan_id">Nomor Penjualan:</label>
+            <input type="text" id="penjualan_id" name="penjualan_id" readonly>
+
+            <label for="tanggal_penjualan">Tanggal Penjualan:</label>
+            <input type="date" id="tanggal_penjualan" name="tanggal_penjualan" required>
+
+            <label for="pelanggan_id">Pelanggan ID:</label>
+            <input type="text" id="pelanggan_id" name="pelanggan_id" required>
+
+            <label for="total">Total Harga:</label>
+            <input type="text" id="total" name="total" readonly>
+
+            <label for="bayar">Jumlah Bayar:</label>
+            <input type="text" id="bayar" name="bayar" required>
+
+            <label for="sisa">Sisa Pembayaran:</label>
+            <input type="text" id="sisa" name="sisa" readonly>
+
+            <label for="keterangan">Keterangan:</label>
+            <textarea id="keterangan" name="keterangan"></textarea>
+        </div>
+
+        <!-- Daftar Produk -->
+        <table class="product-table">
             <thead>
                 <tr>
-                    <th>Penjualan ID</th>
-                    <th>Toko ID</th>
-                    <th>User ID</th>
-                    <th>Tanggal Penjualan</th>
-                    <th>Pelanggan ID</th>
-                    <th>Total</th>
-                    <th>Bayar</th>
-                    <th>Sisa</th>
-                    <th>Keterangan</th>
-                    <th>Created At</th>
-                    <th>Stok</th>
+                    <th>Nama Produk</th>
+                    <th>Harga Satuan</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                foreach ($penjualanData as $penjualan) {
-                    echo "<tr>";
-                    echo "<td>{$penjualan['penjualan_id']}</td>";
-                    echo "<td>{$penjualan['toko_id']}</td>";
-                    echo "<td>{$penjualan['user_id']}</td>";
-                    echo "<td>{$penjualan['tanggal_penjualan']}</td>";
-                    echo "<td>{$penjualan['pelanggan_id']}</td>";
-                    echo "<td>{$penjualan['total']}</td>";
-                    echo "<td>{$penjualan['bayar']}</td>";
-                    echo "<td>{$penjualan['sisa']}</td>";
-                    echo "<td>{$penjualan['keterangan']}</td>";
-                    echo "<td>{$penjualan['created_at']}</td>";
-                    echo "<td>{$penjualan['stok']}</td>";
-                    echo "</tr>";
+                
+                if ($result_produk->num_rows > 0) {
+                    while ($row_produk = $result_produk->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>{$row_produk['nama_produk']}</td>";
+                        
+                        // Pastikan kunci 'harga' ada sebelum mengaksesnya
+                        $harga_produk = isset($row_produk['harga']) ? $row_produk['harga'] : 0;
+                        
+                        echo "<td>{$harga_produk}</td>";
+                        echo "<td><input type='number' class='jumlah-produk' data-harga='{$harga_produk}'></td>";
+                        echo "<td class='subtotal-produk'>0</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4'>Tidak ada produk yang tersedia.</td></tr>";
                 }
+        
+                
                 ?>
             </tbody>
         </table>
+
+        <!-- Tombol dan Fungsionalitas -->
+        <div class="buttons">
+            <button type="button" onclick="cetakNota()">Cetak Nota</button>
+            <button type="button" onclick="selesai()">Selesai</button>
+            <button type="button" onclick="batal()">Batal</button>
+        </div>
     </div>
+
+    <script src="script.js"></script> <!-- Menghubungkan ke file JavaScript -->
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Ambil elemen input untuk nomor penjualan
+    var nomorPenjualanInput = document.getElementById('penjualan_id');
+
+    // Generate nomor penjualan secara otomatis
+    var nomorPenjualan = generateNomorPenjualan();
+    
+    // Set nilai nomor penjualan pada input
+    nomorPenjualanInput.value = nomorPenjualan;
+});
+
+function generateNomorPenjualan() {
+    // Mendapatkan tanggal dan waktu saat ini
+    var date = new Date();
+    
+    // Format nomor penjualan (contoh: YYYYMMDDHHmmss)
+    var nomorPenjualan = date.getFullYear().toString() +
+                        padNumber(date.getMonth() + 1) +
+                        padNumber(date.getDate()) +
+                        padNumber(date.getHours()) +
+                        padNumber(date.getMinutes()) +
+                        padNumber(date.getSeconds());
+
+    return nomorPenjualan;
+}
+
+function padNumber(number) {
+    // Menambahkan nol di depan angka jika hanya satu digit
+    return number < 10 ? '0' + number : number;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // ... (Bagian sebelumnya dari kode JavaScript)
+
+    // Ambil elemen-elemen yang diperlukan
+    var totalInput = document.getElementById('total');
+    var bayarInput = document.getElementById('bayar');
+    var sisaInput = document.getElementById('sisa');
+
+    // Event listener untuk input jumlah bayar
+    bayarInput.addEventListener('input', function() {
+        hitungSisaPembayaran();
+    });
+
+    // ... (Bagian setelahnya dari kode JavaScript)
+
+    // Fungsi untuk menghitung sisa pembayaran
+    function hitungSisaPembayaran() {
+        // Ambil nilai total harga dari input
+        var totalHarga = parseFloat(totalInput.value) || 0;
+
+        // Ambil nilai jumlah bayar dari input
+        var jumlahBayar = parseFloat(bayarInput.value) || 0;
+
+        // Hitung sisa pembayaran
+        var sisaPembayaran = totalHarga - jumlahBayar;
+
+        // Set nilai sisa pembayaran pada input
+        sisaInput.value = sisaPembayaran.toFixed(2);
+    }
+});
+
+ 
+</script>
+
 </body>
 
 </html>
 
                         <!-- Earnings (Monthly) Card Example -->
                         
-                       
+                       <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fc;
+    margin: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    text-align: center;
+    color: #007bff;
+}
+
+.transaction-info,
+.total-payment,
+.buttons {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.buttons button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.buttons button:hover {
+    background-color: #0056b3;
+}
+</style>
 
                         <!-- Pending Requests Card Example -->
                      

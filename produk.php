@@ -64,9 +64,12 @@ include 'koneksi.php';
                     <p style="display: block;"><a class="collapse-item" href="supplier.php" style="color: white; font-weight: bold; font-size: 20px;">Suplier</a></p>                
                     <hr class="sidebar-divider">
                     <p style="display: block;"><a class="collapse-item" href="pembelian.php" style="color: white; font-weight: bold; font-size: 20px;">pembelian</a></p>                
-                    <hr class="sidebar-divider">      
+                    <hr class="sidebar-divider">     
+                       
                     <p style="display: block;"><a class="collapse-item" href="penjualan.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan</a></p>                
-                    <hr class="sidebar-divider">                    
+                    <hr class="sidebar-divider">       
+                     <p style="display: block;"><a class="collapse-item" href="penjualan_detail.php" style="color: white; font-weight: bold; font-size: 20px;">penjualan detail</a></p>                
+                    <hr class="sidebar-divider">               
                 </div>
             </div>
             <!-- Nav Item - Utilities Collapse Menu -->
