@@ -261,36 +261,55 @@ $conn->close();
         <table class="product-table">
             <thead>
                 <tr>
+                    <th>Produk ID</th>
                     <th>Nama Produk</th>
-                    <th>Harga Satuan</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
+                    <th>Kategori ID</th>
+                    <th>Satuan</th>
+                    <th>Harga Jual</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                
+                // Hubungkan ke database
+                $koneksi = new mysqli("localhost", "root", "", "db_kasir");
+
+                // Periksa koneksi
+                if ($koneksi->connect_error) {
+                    die("Koneksi Gagal: " . $koneksi->connect_error);
+                }
+
+                // Query untuk mendapatkan data produk
+                $query_produk = "SELECT * FROM produk";
+                $result_produk = $koneksi->query($query_produk);
+
+                // Periksa apakah ada data produk
                 if ($result_produk->num_rows > 0) {
                     while ($row_produk = $result_produk->fetch_assoc()) {
                         echo "<tr>";
+                        echo "<td>{$row_produk['produk_id']}</td>";
                         echo "<td>{$row_produk['nama_produk']}</td>";
-                        
-                        // Pastikan kunci 'harga' ada sebelum mengaksesnya
-                        $harga_produk = isset($row_produk['harga']) ? $row_produk['harga'] : 0;
-                        
-                        echo "<td>{$harga_produk}</td>";
-                        echo "<td><input type='number' class='jumlah-produk' data-harga='{$harga_produk}'></td>";
-                        echo "<td class='subtotal-produk'>0</td>";
+                        echo "<td>{$row_produk['kategori_id']}</td>";
+                        echo "<td>{$row_produk['satuan']}</td>";
+                        echo "<td>{$row_produk['harga_jual']}</td>";
+                        echo "<td>{$row_produk['stok']}</td>";
+                        echo "<td><button onclick='tambahProduk({$row_produk['harga_jual']})'>Tambah</button></td>";
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='4'>Tidak ada produk yang tersedia.</td></tr>";
+                    echo "<tr><td colspan='7'>Tidak ada produk yang tersedia.</td></tr>";
                 }
-        
-                
+
+                // Tutup koneksi ke database
+                $koneksi->close();
                 ?>
             </tbody>
         </table>
+
+        <!-- Tombol dan Fungsionalitas -->
+        
+</html>
 
         <!-- Tombol dan Fungsionalitas -->
         <div class="buttons">

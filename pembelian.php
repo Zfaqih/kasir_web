@@ -202,121 +202,74 @@ $result2=mysqli_query($conn,$sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Pembelian</title>
-    <!-- Add your CSS link or styles here -->
-    <style>
-        /* Add your styles here */
-    </style>
+    <title>Halaman Pembelian</title>
+    <link rel="stylesheet" href="style.css"> <!-- Menghubungkan ke file CSS -->
 </head>
 
 <body>
 
-    <h2 class="text-center">Data Pembelian</h2>
-
     <div class="container">
-        <!-- Add a form for adding a new purchase -->
-        <form action="proses_tambah_pembelian.php" method="post">
-            <!-- Include necessary input fields -->
+        <h2>Data Pembelian</h2>
+
+        <!-- Informasi Pembelian -->
+        <div class="purchase-info">
+            <label for="pembelian_id">ID Pembelian:</label>
+            <input type="text" id="pembelian_id" name="pembelian_id" readonly>
+
             <label for="no_faktur">No. Faktur:</label>
-            <input type="text" id="no_faktur" name="no_faktur" required readonly>
+            <input type="text" id="no_faktur" name="no_faktur" required>
 
             <label for="tanggal_pembelian">Tanggal Pembelian:</label>
             <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" required>
 
             <label for="suplier_id">Supplier ID:</label>
-            <input type="text" id="suplier_id" name="suplier_id" required readonly>
+            <input type="text" id="suplier_id" name="suplier_id" required>
 
-            <label for="total">Total:</label>
-            <input type="text" id="total" name="total" required>
+            <label for="total">Total Harga:</label>
+            <input type="text" id="total" name="total" readonly>
 
-            <label for="bayar">Bayar:</label>
+            <label for="bayar">Jumlah Bayar:</label>
             <input type="text" id="bayar" name="bayar" required>
 
-            <label for="sisa">Sisa:</label>
-            <input type="text" id="sisa" name="sisa" required>
-
-            <label for="stok">Stok:</label>
-            <input type="text" id="stok" name="stok" required>
+            <label for="sisa">Sisa Pembayaran:</label>
+            <input type="text" id="sisa" name="sisa" readonly>
 
             <label for="keterangan">Keterangan:</label>
             <textarea id="keterangan" name="keterangan"></textarea>
+        </div>
 
-
-
-            <button type="submit">Tambah Pembelian</button>
-        </form>
-
-        <table class="table table-bordered table-sm">
-            <!-- Include a table to display existing purchases -->
+        <!-- Daftar Produk -->
+        <table class="product-table">
             <thead>
-                <tr class="text-center">
-                    <th>No. Faktur</th>
-                    <th>Tanggal Pembelian</th>
-                    <th>Supplier ID</th>
-                    <th>Total</th>
-                    <th>Bayar</th>
-                    <th>Sisa</th>
-                    <th>Stok</th>
-                    <th>Keterangan</th>
-                    <th>Created At</th>
+                <tr>
+                    <th>Nama Produk</th>
+                    <th>Harga Satuan</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                // Connect to your database and fetch data to display in the table
-                // Use a PDO connection or any database connection method you prefer
-                try {
-                    $pdo = new PDO("mysql:host=localhost;dbname=db_kasir", "root", "");
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                    $stmt = $pdo->prepare("SELECT * FROM pembelian");
-                    $stmt->execute();
-                    $pembelianData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                    foreach ($pembelianData as $pembelian) {
-                        echo "<tr>";
-                        echo "<td>{$pembelian['no_faktur']}</td>";
-                        echo "<td>{$pembelian['tanggal_pembelian']}</td>";
-                        echo "<td>{$pembelian['suplier_id']}</td>";
-                        echo "<td>{$pembelian['total']}</td>";
-                        echo "<td>{$pembelian['bayar']}</td>";
-                        echo "<td>{$pembelian['sisa']}</td>";
-                        echo "<td>{$pembelian['stok']}</td>";
-                        echo "<td>{$pembelian['keterangan']}</td>";
-                        echo "<td>{$pembelian['created_at']}</td>";
-                        echo "</tr>";
-                    }
-                } catch (PDOException $e) {
-                    echo "Error: " . $e->getMessage();
-                }
-                // Close the database connection
-                $pdo = null;
-                ?>
+                <!-- Daftar produk akan ditampilkan di sini -->
             </tbody>
         </table>
+
+        <!-- Tombol dan Fungsionalitas -->
+        <div class="buttons">
+            <button type="button" onclick="cetakNota()">Cetak Nota</button>
+            <button type="button" onclick="selesai()">Selesai</button>
+            <button type="button" onclick="batal()">Batal</button>
+        </div>
     </div>
 
+    <script src="script.js"></script> <!-- Menghubungkan ke file JavaScript -->
+
+</body>
+
+</html>
+
+
     <!-- Add your JavaScript code here -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Generate a unique value for No. Faktur
-            var uniqueNoFaktur = 'F' + Date.now();
-            document.getElementById('no_faktur').value = uniqueNoFaktur;
-
-            // Fetch supplier data from the server (adjust the URL accordingly)
-            fetch('get_supplier_data.php')
-                .then(response => response.json())
-                .then(data => {
-                    // Assuming data contains an array of suppliers
-                    // You can customize this based on your actual data structure
-                    if (data.length > 0) {
-                        document.getElementById('suplier_id').value = data[0].supplier_id;
-                    }
-                })
-                .catch(error => console.error('Error fetching supplier data:', error));
-        });
-    </script>
-
+    
 </body>
 
 </html>
